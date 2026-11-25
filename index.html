@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ميزانيتي - إدارة الدخل والمصاريف الشهرية">
+  <title>ميزانيتي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="ميزانيتي">
+        <span class="brand-mark">م</span>
+        <span>ميزانيتي</span>
+      </a>
+
+      <nav class="main-nav" aria-label="التنقل الرئيسي">
+        <button class="nav-item active" data-section="dashboard">
+          <span class="nav-icon">⌂</span>
+          <span>الرئيسية</span>
+        </button>
+        <button class="nav-item" data-section="transactions">
+          <span class="nav-icon">↔</span>
+          <span>المعاملات</span>
+        </button>
+        <button class="nav-item" data-section="budgets">
+          <span class="nav-icon">▦</span>
+          <span>الميزانية</span>
+        </button>
+        <button class="nav-item" data-section="reports">
+          <span class="nav-icon">▤</span>
+          <span>التقارير</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button class="nav-item" data-section="settings">
+          <span class="nav-icon">⚙</span>
+          <span>الإعدادات</span>
+        </button>
+        <div class="profile">
+          <div class="avatar">س</div>
+          <div>
+            <strong>سارة أحمد</strong>
+            <small>sarah@example.com</small>
+          </div>
+          <button class="more-button" aria-label="معلومات الحساب">⋮</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-button" aria-label="فتح القائمة">☰</button>
+        <div>
+          <p class="eyebrow">مرحبًا بعودتك، سارة</p>
+          <h1>لوحة التحكم</h1>
+        </div>
+        <div class="header-actions">
+          <button class="icon-button" id="notificationButton" aria-label="الإشعارات">♢<span class="notification-dot"></span></button>
+          <div class="notification-popover" id="notificationPopover">
+            <strong>التنبيهات</strong>
+            <p>لا توجد تنبيهات جديدة. ميزانيتك تحت السيطرة.</p>
+          </div>
+          <button class="add-expense-button" id="openExpenseModal">
+            <span>＋</span>
+            إضافة مصروف
+          </button>
+        </div>
+      </header>
+
+      <section class="overview-grid" aria-label="ملخص الميزانية">
+        <article class="summary-card balance-card">
+          <div class="summary-top">
+            <span class="summary-icon">◎</span>
+            <span>الرصيد المتاح</span>
+          </div>
+          <strong id="availableBalance">5,200 ج.م</strong>
+          <small id="balanceChange">من إجمالي الدخل الشهري</small>
+        </article>
+        <article class="summary-card">
+          <div class="summary-top">
+            <span class="summary-icon income-icon">↙</span>
+            <span>الدخل</span>
+          </div>
+          <strong id="totalIncome">12,000 ج.م</strong>
+          <small class="positive">شهريًا</small>
+        </article>
+        <article class="summary-card">
+          <div class="summary-top">
+            <span class="summary-icon expense-icon">↗</span>
+            <span>المصروفات</span>
+          </div>
+          <strong id="totalExpenses">6,800 ج.م</strong>
+          <small id="expensePercent">56.7% من الدخل</small>
+        </article>
+        <article class="summary-card">
+          <div class="summary-top">
+            <span class="summary-icon savings-icon">▱</span>
+            <span>الادخار</span>
+          </div>
+          <strong id="savingsAmount">1,500 ج.م</strong>
+          <small class="positive">12.5% من الدخل</small>
+        </article>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="panel spending-panel">
+          <div class="panel-header">
+            <div>
+              <h2>المصروفات حسب الفئة</h2>
+              <p>نظرة عامة على إنفاقك هذا الشهر</p>
+            </div>
+            <select class="select-button month-select" id="monthSelect" aria-label="اختيار الشهر">
+              <option value="current">هذا الشهر</option>
+              <option value="previous">الشهر السابق</option>
+            </select>
+          </div>
+          <div class="chart-layout">
+            <div class="donut-wrap">
+              <canvas id="categoryChart"></canvas>
+              <div class="donut-center">
+                <span>إجمالي المصروفات</span>
+                <strong id="chartTotal">6,800 ج.م</strong>
+              </div>
+            </div>
+            <div class="chart-legend" id="chartLegend"></div>
+          </div>
+        </section>
+
+        <section class="panel budget-panel">
+          <div class="panel-header">
+            <div>
+              <h2>ميزانية الفئات</h2>
+              <p>تابع حدود الإنفاق الخاصة بك</p>
+            </div>
+            <button class="text-button" data-go="budgets">عرض الكل</button>
+          </div>
+          <div class="budget-list" id="budgetList"></div>
+        </section>
+
+        <section class="panel transactions-panel">
+          <div class="panel-header">
+            <div>
+              <h2>آخر المعاملات</h2>
+              <p>آخر المصروفات المسجلة</p>
+            </div>
+            <button class="text-button" data-go="transactions">عرض الكل</button>
+          </div>
+          <div class="transaction-list" id="transactionList"></div>
+        </section>
+
+        <section class="panel insight-panel">
+          <div class="insight-icon">✦</div>
+          <div>
+            <p>تحليل هذا الشهر</p>
+            <h3>مصروفاتك أقل من الشهر الماضي بنسبة 8%!</h3>
+            <span>واصل التوفير بنفس الوتيرة لتصل إلى هدفك أسرع.</span>
+          </div>
+        </section>
+      </div>
+
+      <section class="page-view" id="transactionsView">
+        <div class="page-heading">
+          <div><h2>كل المعاملات</h2><p>عرض وتصفية مصروفاتك المسجلة</p></div>
+          <button class="secondary-button" id="transactionsAddButton">＋ مصروف جديد</button>
+        </div>
+        <div class="panel"><div class="full-list" id="allTransactions"></div></div>
+      </section>
+
+      <section class="page-view" id="budgetsView">
+        <div class="page-heading"><div><h2>ميزانية الفئات</h2><p>حدود الإنفاق الشهرية المقترحة لك</p></div></div>
+        <div class="budget-cards" id="budgetCards"></div>
+      </section>
+
+      <section class="page-view" id="reportsView">
+        <div class="page-heading">
+          <div><h2>التقارير الشهرية</h2><p>ملخص واضح لأداء ميزانيتك</p></div>
+          <button class="secondary-button" id="exportCsvButton">تصدير Excel (CSV)</button>
+        </div>
+        <div class="report-grid">
+          <article class="panel report-card"><span>إجمالي المصروفات</span><strong id="reportExpenses">0 ج.م</strong></article>
+          <article class="panel report-card"><span>متوسط المعاملة</span><strong id="reportAverage">0 ج.م</strong></article>
+          <article class="panel report-card"><span>عدد المعاملات</span><strong id="reportCount">0</strong></article>
+        </div>
+        <div class="panel report-details"><h3>تفاصيل المصروفات حسب الفئة</h3><div id="reportCategoryList"></div></div>
+      </section>
+
+      <section class="page-view" id="settingsView">
+        <div class="page-heading"><div><h2>الإعدادات</h2><p>خصص بيانات حسابك وميزانيتك</p></div></div>
+        <div class="panel settings-panel">
+          <form id="settingsForm">
+            <label>الدخل الشهري<input id="settingsIncome" type="number" min="1" required></label>
+            <label>الادخار الشهري<input id="settingsSavings" type="number" min="0" required></label>
+            <div class="modal-actions"><span class="save-message" id="settingsSaved">تم حفظ الإعدادات</span><button class="add-expense-button" type="submit">حفظ الإعدادات</button></div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="expenseModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="expenseModalTitle">
+      <div class="modal-header">
+        <div>
+          <h2 id="expenseModalTitle">إضافة مصروف جديد</h2>
+          <p>سجل مصروفك لتحديث الميزانية تلقائيًا</p>
+        </div>
+        <button class="close-button" id="closeExpenseModal" aria-label="إغلاق">×</button>
+      </div>
+      <form id="expenseForm">
+        <label>
+          اسم المصروف
+          <input id="expenseName" type="text" placeholder="مثال: شراء مواد غذائية" required>
+        </label>
+        <div class="form-row">
+          <label>
+            المبلغ (ج.م)
+            <input id="expenseAmount" type="number" min="1" step="0.01" placeholder="0" required>
+          </label>
+          <label>
+            الفئة
+            <select id="expenseCategory">
+              <option value="food">طعام</option>
+              <option value="transport">مواصلات</option>
+              <option value="bills">فواتير</option>
+              <option value="shopping">تسوق</option>
+              <option value="health">صحة</option>
+              <option value="entertainment">ترفيه</option>
+            </select>
+          </label>
+        </div>
+        <label>
+          التاريخ
+          <input id="expenseDate" type="date" required>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="secondary-button" id="cancelExpense">إلغاء</button>
+          <button type="submit" class="add-expense-button">حفظ المصروف</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
